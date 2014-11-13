@@ -10,8 +10,8 @@ import Foundation
 
 
 struct Credentials {
-    var username: NSString?
-    var password: NSString?
+    var username: String?
+    var password: String?
 }
 
 class Login: NSObject {
@@ -111,7 +111,7 @@ class Login: NSObject {
         
         let opaque = dataTypeRef?.toOpaque()
         
-        var contentsOfKeychain: NSString?
+        var contentsOfKeychain: String?
         
         if let op = opaque? {
             let retrievedData = Unmanaged<NSData>.fromOpaque(op).takeUnretainedValue()

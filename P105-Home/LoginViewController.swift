@@ -41,6 +41,7 @@ class LoginViewController: UIViewController {
     }
     
     func loginPressed() {
+        self.view.endEditing(true)
         let syncTabs = "https://syncapi-dev.sateh.com/1.0/tabs"
         Spinner.startAnimating()
         Alamofire.request(.GET, syncTabs, parameters: nil)

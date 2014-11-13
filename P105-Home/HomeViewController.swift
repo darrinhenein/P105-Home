@@ -8,13 +8,16 @@
 
 import UIKit
 
-class HomeViewController: UIViewController, canFetchData {
+class HomeViewController: UIViewController, canFetchData, RefreshableUIViewController {
 
-   var tableController: HomeTableViewController?
+    var tableController: HomeTableViewController?
+    var lastController: LastHistoryViewController?
     
+    @IBOutlet weak var latestContainer: UIView!
     
     func fetchData() {
         self.tableController?.getTabs()
+        self.lastController?.getHistory()
     }
     
     override func viewDidLoad() {
@@ -27,7 +30,17 @@ class HomeViewController: UIViewController, canFetchData {
         
         if segueName == "HomeTableSegue" {
             self.tableController = segue.destinationViewController as? HomeTableViewController
+            self.tableController?.parent = self
         }
+        
+        if segueName == "HomeRecentSegue" {
+            self.lastController = segue.destinationViewController as? LastHistoryViewController
+        }
+        
+    }
+    
+    func refresh() {
+        self.lastController?.getHistory()
     }
 
     override func viewDidAppear(animated: Bool) {

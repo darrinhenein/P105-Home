@@ -10,11 +10,16 @@ import UIKit
 import Alamofire
 
 
+@objc protocol RefreshableUIViewController{
+    func refresh()    
+}
+
 class HomeTableViewController: UITableViewController {
     
     var tabs: TabsResponse!
     var rc: UIRefreshControl!
     var spinner: UIActivityIndicatorView!
+    var parent: RefreshableUIViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,6 +95,25 @@ class HomeTableViewController: UITableViewController {
         var meta = cell.viewWithTag(3) as? UILabel
         meta?.text = self.tabs.clients[0].name as NSString
         
+        var imgURL: NSURL = NSURL(string: "http://www.google.com/s2/favicons?domain=" + tab.url)!
+        
+        let request: NSURLRequest = NSURLRequest(URL: imgURL)
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
+            if error == nil {
+                var image = UIImage(data: data)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    if let cellToUpdate = tableView.cellForRowAtIndexPath(indexPath) {
+                        var imageView = cellToUpdate.viewWithTag(4) as? UIImageView
+                        imageView?.image = image
+                    }
+                })
+            }
+            else {
+                println("Error: \(error.localizedDescription)")
+            }
+        })
+        
 
         return cell
     }
@@ -115,6 +139,9 @@ class HomeTableViewController: UITableViewController {
     
     func refresh(sender: AnyObject) {
         self.getTabs()
+        if let parent = self.parent {
+            parent.refresh()
+        }
     }
     
     func clearTabs() {
