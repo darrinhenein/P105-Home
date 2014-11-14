@@ -50,7 +50,7 @@ class TimelineViewController: UIViewController, WKNavigationDelegate, WKScriptMe
             var syncUser: Credentials!
             syncUser = Login().getKeychainUser(Login().getUsername())
             
-            self.webView!.evaluateJavaScript("storeUser('\(syncUser.username!)', '\(syncUser.password!)')", completionHandler: nil)
+            self.webView!.evaluateJavaScript("login('\(syncUser.username!)', '\(syncUser.password!)')", completionHandler: nil)
         }
     }
     
